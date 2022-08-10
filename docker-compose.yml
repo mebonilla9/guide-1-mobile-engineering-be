@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  postgres-guide-1:
+    container_name: postgres-guide-1
+    image: postgres
+    environment:
+      POSTGRES_USER: dbguide1
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: guide1
+      PGDATA: /data/postgres
+    volumes:
+      - postgres-guide-1:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+  postgres-guide-1:
