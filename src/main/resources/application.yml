@@ -16,3 +16,6 @@ spring:
         format_sql: true
     show-sql: true
     defer-datasource-initialization: true
+app:
+  jwt:
+    secret: DevManuel@1988!
