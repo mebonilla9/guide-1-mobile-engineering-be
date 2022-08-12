@@ -10,17 +10,20 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public record UserService(
   UserRepository userRepository,
   AuthenticationManager manager,
-  JwtTokenUtil tokenUtil) {
+  JwtTokenUtil tokenUtil,
+  PasswordEncoder passwordEncoder
+) {
 
   public void registerUser(UserRequest userRequest) {
     User user = UserMapper.INSTANCE.userRequestToUser(userRequest);
-    user.setPassword(new BCryptPasswordEncoder().encode(userRequest.password()));
+    user.setPassword(passwordEncoder.encode(userRequest.password()));
     userRepository.save(user);
   }
 
