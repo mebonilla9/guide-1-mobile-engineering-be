@@ -40,6 +40,9 @@ public class User implements UserDetails{
   @Column(length = 200, nullable = false)
   private String password;
 
+  @Column(nullable = false)
+  private Boolean active;
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

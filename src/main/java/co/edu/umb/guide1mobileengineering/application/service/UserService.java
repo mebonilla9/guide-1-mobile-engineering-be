@@ -9,9 +9,11 @@ import co.edu.umb.guide1mobileengineering.domain.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public record UserService(
@@ -23,6 +25,7 @@ public record UserService(
 
   public void registerUser(UserRequest userRequest) {
     User user = UserMapper.INSTANCE.userRequestToUser(userRequest);
+    user.setActive(Boolean.TRUE);
     user.setPassword(passwordEncoder.encode(userRequest.password()));
     userRepository.save(user);
   }
@@ -43,4 +46,15 @@ public record UserService(
     userRepository.save(user);
   }
 
+  public List<UserRequest> getActiveUsers(){
+    List<User> users = userRepository.findAll().stream().filter(User::getActive).toList();
+    users.forEach(user -> user.setPassword(""));
+    return UserMapper.INSTANCE.userListToUserRequestList(users);
+  }
+
+  public void deactivateUser(Integer id) {
+    User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    user.setActive(Boolean.FALSE);
+    userRepository.save(user);
+  }
 }
